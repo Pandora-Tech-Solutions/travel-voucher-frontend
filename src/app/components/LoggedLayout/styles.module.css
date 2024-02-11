@@ -1,0 +1,7 @@
+.menuText {
+  color: var(--brand-7);
+}
+
+.menuDivider {
+  border-color: var(--brand-3);
+}
