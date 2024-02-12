@@ -1,22 +1,90 @@
 "use client";
-import React, { useEffect } from 'react';
+import React from "react";
+import { useRouter } from "next/navigation";
+import { GridActionsCellItem, GridColDef } from "@mui/x-data-grid";
+import { Box } from "@mui/material";
+import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
 
-import { useLazyGetUsersQuery } from '@/store/features/user-slice';
-import { useAppSelector } from '@/store/hooks';
-import { RootState } from '@/store/store';
+import {
+  useGetUsersQuery,
+  useRemoveUserMutation,
+} from "@/store/features/user-slice";
+import { StyledDataGrid } from "../StyledDataGrid";
 
 const UserList: React.FC = () => {
-  const { users } = useAppSelector((state: RootState) => state.users);
-  const [ getUsers, status ] = useLazyGetUsersQuery()
+  const router = useRouter();
+  const { data, isFetching, isError } = useGetUsersQuery({});
+  const [deleteUser, deleteUserStatus] = useRemoveUserMutation();
 
-  console.log(users, status)
+  const dataWithIds = data?.data.map((item) => ({
+    ...item,
+    id: item._id,
+  }));
 
-  useEffect(() => {
-    getUsers()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  
-  return <div />;
-}
+  const handleEditUser = (id: string) => {
+    router.push(`/cms/clients/${id}`);
+  }
+
+  const columns: GridColDef[] = [
+    { field: "id", headerName: "ID", flex: 1, minWidth: 200 },
+    { field: "name", headerName: "Nome", flex: 1, minWidth: 200 },
+    { field: "email", headerName: "E-mail", flex: 1, minWidth: 200 },
+    { field: "cpf", headerName: "CPF", flex: 1, minWidth: 200 },
+    { field: "rg", headerName: "RG", flex: 1, minWidth: 200 },
+    {
+      field: "actions",
+      type: "actions",
+      headerName: "Ações",
+      width: 100,
+      cellClassName: "actions",
+      resizable: true,
+      renderCell: (params) => (
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-around",
+            width: "100%",
+          }}
+        >
+          <GridActionsCellItem
+            icon={<EditIcon color="info" />}
+            key="edit"
+            label="Edit"
+            className="textPrimary"
+            onClick={() => handleEditUser(params.id as string)}
+            color="inherit"
+          />
+          <GridActionsCellItem
+            icon={<DeleteIcon color="error" />}
+            key="delete"
+            label="Delete"
+            className="textPrimary"
+            onClick={() => deleteUser(params.id as string)}
+            color="inherit"
+          />
+        </Box>
+      ),
+    },
+  ];
+
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        height: 400,
+        width: "100%",
+        overflowX: "auto",
+        flex: 1,
+      }}
+    >
+      <StyledDataGrid
+        rows={dataWithIds || []}
+        columns={columns}
+        loading={isFetching}
+        sx={{ scrollbarWidth: "thin", overflowX: "auto" }}
+      />
+    </Box>
+  );
+};
 
 export default UserList;

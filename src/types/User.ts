@@ -7,6 +7,7 @@ export interface User {
   name: string;
   cpf: string;
   rg?: string;
+  phone: string;
   email: string;
   password: string;
   passwordResetToken?: string;
@@ -20,3 +21,10 @@ export type Auth = {
   user: User;
   access_token: string;
 };
+
+export interface IUserQuery {
+  page?: number;
+  limit?: number;
+  search?: string;
+}
+

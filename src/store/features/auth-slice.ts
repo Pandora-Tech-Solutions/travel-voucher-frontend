@@ -1,7 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { apiSlice } from './api-slice'
-import { getToken } from 'next-auth/jwt'
-import { states } from '@/utils/constants/states'
 
 export interface AuthState {
   access_token: string

@@ -1,9 +1,10 @@
 "use client";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { use, useCallback, useEffect, useState } from "react";
 
 import {
   Box,
   Button,
+  CircularProgress,
   FormControl,
   FormHelperText,
   Grid,
@@ -11,7 +12,6 @@ import {
   MenuItem,
   Paper,
   Select,
-  SelectChangeEvent,
   TextField,
   Typography,
 } from "@mui/material";
@@ -21,8 +21,30 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { User } from "@/types/User";
 import { states } from "@/utils/constants/states";
+import {
+  useCreateUserMutation,
+  useUpdateUserMutation,
+} from "@/store/features/user-slice";
+import { Roles } from "@/types/Roles";
+import { Router } from "next/router";
+import { useRouter } from "next/navigation";
 
-const UserRegister: React.FC = () => {
+interface IUserRegisterProps {
+  user?: User;
+  loading?: boolean;
+  error?: boolean;
+}
+
+const UserRegister: React.FC<IUserRegisterProps> = ({
+  user,
+  error,
+  loading,
+}) => {
+  const [updateUser, updateUserStatus] = useUpdateUserMutation();
+  const [createUser, createUserStatus] = useCreateUserMutation();
+
+  const router = useRouter();
+
   const UserSchema = z.object({
     name: z.string().min(1, { message: "Informe seu nome" }),
     email: z
@@ -33,13 +55,15 @@ const UserRegister: React.FC = () => {
     rg: z.string().min(1, { message: "Informe seu RG" }),
     phone: z.string().min(1, { message: "Informe seu telefone" }),
     roles: z.string().min(1, { message: "Informe sua função" }),
-    cep: z.string().min(1, { message: "Informe seu CEP" }),
-    street: z.string().min(1, { message: "Informe sua rua" }),
-    number: z.string().min(1, { message: "Informe o número" }),
-    complement: z.string().min(1, { message: "Informe o complemento" }),
-    neighborhood: z.string().min(1, { message: "Informe o bairro" }),
-    city: z.string().min(1, { message: "Informe a cidade" }),
-    state: z.string().min(1, { message: "Informe o estado" }),
+    address: z.object({
+      zipcode: z.string().min(1, { message: "Informe seu CEP" }),
+      street: z.string().min(1, { message: "Informe sua rua" }),
+      number: z.string().min(1, { message: "Informe o número" }),
+      complement: z.string(),
+      neighborhood: z.string().min(1, { message: "Informe o bairro" }),
+      city: z.string().min(1, { message: "Informe a cidade" }),
+      state: z.string().min(1, { message: "Informe o estado" }),
+    }),
   });
 
   const {
@@ -48,18 +72,35 @@ const UserRegister: React.FC = () => {
     formState: { errors },
   } = useForm({
     resolver: zodResolver(UserSchema),
+    defaultValues:
+      {
+        ...user,
+        address: { ...user?.address, number: user?.address.number.toString() },
+      } || {},
   });
 
-  const handleChange = (event: SelectChangeEvent) => {
-    console.log(event.target.value);
-  };
+  const userCreate = useCallback(
+    async (values: any) => {
+      try {
+        const userData: User = values;
 
-  const userCreate = useCallback(async (values: any) => {
-    const { email, password }: User = values;
-    console.log(values);
-  }, []);
+        if (!!user) {
+          updateUser({ ...userData, _id: user._id, roles: [userData.roles as any] });
+          return router.push("/cms/clients");
+        }
 
-  return (
+        createUser({ ...userData, roles: [userData.roles as any] });
+        return  router.push("/cms/clients");
+        } catch (error) {
+        console.log(error);
+      }
+    },
+    [createUser, router, updateUser, user]
+  );
+
+  return loading ? (
+    <CircularProgress />
+  ) : (
     <Box>
       <Box
         component="form"
@@ -143,12 +184,12 @@ const UserRegister: React.FC = () => {
                         id="role"
                         {...register("roles")}
                         label="Função"
-                        onChange={handleChange}
                         error={!!errors?.roles}
+                        defaultValue={user?.roles[0] || ""}
                       >
-                        <MenuItem value={"10"}>Ten</MenuItem>
-                        <MenuItem value={"20"}>Twenty</MenuItem>
-                        <MenuItem value={"30"}>Thirty</MenuItem>
+                        <MenuItem value={Roles.ADMIN}>Admin</MenuItem>
+                        <MenuItem value={Roles.COMPANY_ADMIN}>Company Admin</MenuItem>
+                        <MenuItem value={Roles.USER}>User</MenuItem>
                       </Select>
                       {errors?.roles?.message && (
                         <FormHelperText sx={{ color: "#D32F2F" }}>
@@ -172,51 +213,57 @@ const UserRegister: React.FC = () => {
                 <Grid container spacing={2}>
                   <Grid item xs={12} lg={6}>
                     <TextField
-                      id="cep"
+                      id="zipcode"
                       label="CEP"
-                      {...register("cep")}
+                      {...register("address.zipcode")}
                       variant="outlined"
                       fullWidth
                       size="small"
-                      error={!!errors?.cep}
-                      helperText={(errors?.cep?.message || "").toString()}
+                      error={!!errors?.address?.zipcode}
+                      helperText={(
+                        errors?.address?.zipcode?.message || ""
+                      ).toString()}
                     />
                   </Grid>
                   <Grid item xs={12} lg={6}>
                     <TextField
                       id="street"
                       label="Rua"
-                      {...register("street")}
+                      {...register("address.street")}
                       variant="outlined"
                       fullWidth
                       size="small"
-                      error={!!errors?.street}
-                      helperText={(errors?.street?.message || "").toString()}
+                      error={!!errors?.address?.street}
+                      helperText={(
+                        errors?.address?.street?.message || ""
+                      ).toString()}
                     />
                   </Grid>
                   <Grid item xs={12} lg={6}>
                     <TextField
                       id="number"
                       label="Número"
-                      {...register("number")}
+                      {...register("address.number")}
                       variant="outlined"
                       fullWidth
                       size="small"
-                      error={!!errors?.number}
-                      helperText={(errors?.number?.message || "").toString()}
+                      error={!!errors?.address?.number}
+                      helperText={(
+                        errors?.address?.number?.message || ""
+                      ).toString()}
                     />
                   </Grid>
                   <Grid item xs={12} lg={6}>
                     <TextField
                       id="complement"
                       label="Complemento"
-                      {...register("complement")}
+                      {...register("address.complement")}
                       variant="outlined"
                       fullWidth
                       size="small"
-                      error={!!errors?.complement}
+                      error={!!errors?.address?.complement}
                       helperText={(
-                        errors?.complement?.message || ""
+                        errors?.address?.complement?.message || ""
                       ).toString()}
                     />
                   </Grid>
@@ -224,13 +271,13 @@ const UserRegister: React.FC = () => {
                     <TextField
                       id="neighborhood"
                       label="Bairro"
-                      {...register("neighborhood")}
+                      {...register("address.neighborhood")}
                       variant="outlined"
                       fullWidth
                       size="small"
-                      error={!!errors?.neighborhood}
+                      error={!!errors?.address?.neighborhood}
                       helperText={(
-                        errors?.neighborhood?.message || ""
+                        errors?.address?.neighborhood?.message || ""
                       ).toString()}
                     />
                   </Grid>
@@ -238,12 +285,14 @@ const UserRegister: React.FC = () => {
                     <TextField
                       id="city"
                       label="Cidade"
-                      {...register("city")}
+                      {...register("address.city")}
                       variant="outlined"
                       fullWidth
                       size="small"
-                      error={!!errors?.city}
-                      helperText={(errors?.city?.message || "").toString()}
+                      error={!!errors?.address?.city}
+                      helperText={(
+                        errors?.address?.city?.message || ""
+                      ).toString()}
                     />
                   </Grid>
                   <Grid item xs={12} lg={6}>
@@ -252,10 +301,10 @@ const UserRegister: React.FC = () => {
                       <Select
                         labelId="state"
                         id="state"
-                        {...register("state")}
+                        {...register("address.state")}
                         label="Estado"
-                        onChange={handleChange}
-                        error={!!errors?.state}
+                        error={!!errors?.address?.state}
+                        defaultValue={user?.address?.state || ""}
                       >
                         {states.map((state) => (
                           <MenuItem value={state.value} key={state.value}>
@@ -263,9 +312,9 @@ const UserRegister: React.FC = () => {
                           </MenuItem>
                         ))}
                       </Select>
-                      {errors?.state?.message && (
+                      {errors?.address?.state?.message && (
                         <FormHelperText sx={{ color: "#D32F2F" }}>
-                          {errors?.state?.message.toString()}
+                          {errors?.address?.state?.message.toString()}
                         </FormHelperText>
                       )}
                     </FormControl>

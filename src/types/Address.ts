@@ -5,4 +5,5 @@ export interface Address {
   neighborhood: string;
   state: string;
   zipcode: string;
+  complement?: string;
 }

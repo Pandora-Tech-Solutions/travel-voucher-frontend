@@ -5,7 +5,7 @@ import {
 
 import { apiSlice } from './features/api-slice'
 import authReducer from './features/auth-slice'
-import usersReducer from './features/user-slice'
+import usersReducer, { userApiSlice } from './features/user-slice'
 
 import storage from './customStorage'
 
@@ -15,7 +15,12 @@ const persistConfig = {
   storage,
 }
 
-export const rootReducer = combineReducers({ [apiSlice.reducerPath]: apiSlice.reducer, auth: authReducer, users: usersReducer});
+export const rootReducer = combineReducers({
+  [apiSlice.reducerPath]: apiSlice.reducer,
+  userApi: userApiSlice.reducer, // Fixed the duplicate property name
+  auth: authReducer,
+  users: usersReducer
+});
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)
 
