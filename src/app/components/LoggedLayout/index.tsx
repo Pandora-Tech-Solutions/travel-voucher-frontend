@@ -1,5 +1,6 @@
 "use client";
 import * as React from "react";
+import Image from "next/image";
 import {
   AppBar,
   CssBaseline,
@@ -14,6 +15,7 @@ import {
   Box,
   Drawer,
   Typography,
+  Collapse,
 } from "@mui/material";
 
 import MailIcon from "@mui/icons-material/Mail";
@@ -22,7 +24,10 @@ import InboxIcon from "@mui/icons-material/MoveToInbox";
 
 import { theme } from "@/app/theme";
 import styles from "./styles.module.css";
-import Image from "next/image";
+
+import menuItems from "./menuItems.json";
+import { Router } from "next/router";
+import { useRouter } from "next/navigation";
 
 const drawerWidth = 280;
 
@@ -34,6 +39,7 @@ export default function LoggedLayout(props: Props) {
   const { children } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [isClosing, setIsClosing] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
 
   const handleDrawerClose = () => {
     setIsClosing(true);
@@ -50,36 +56,60 @@ export default function LoggedLayout(props: Props) {
     }
   };
 
+  const router = useRouter();
+
   const drawer = (
     <div>
       <Toolbar>
         <Typography>Vale Viagem</Typography>
       </Toolbar>
       <List>
-        {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon className={styles.menuText}>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} className={styles.menuText} />
-            </ListItemButton>
-          </ListItem>
+        {menuItems.map((text, index) => (
+          <>
+            <ListItem key={index} disablePadding>
+              <ListItemButton
+                onClick={() => {
+                  text.nested ? setOpen(!open) : router.push(text.url);
+                }}
+              >
+                <ListItemIcon className={styles.menuText}>
+                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                </ListItemIcon>
+                <ListItemText
+                  primary={text.title}
+                  className={styles.menuText}
+                />
+              </ListItemButton>
+            </ListItem>
+            <Collapse in={open} timeout="auto" unmountOnExit>
+              <List>
+                {text.children.map((child, idx) => (
+                  <ListItem
+                    key={idx}
+                    disablePadding
+                    className={styles.menuText}
+                  >
+                    <ListItemButton
+                      component="a"
+                      href={child.url}
+                      className={styles.menuText}
+                    >
+                      <ListItemIcon className={styles.menuText}>
+                        {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={child.title}
+                        className={styles.menuText}
+                      />
+                    </ListItemButton>
+                  </ListItem>
+                ))}
+              </List>
+            </Collapse>
+          </>
         ))}
       </List>
       <Divider className={styles.menuDivider} />
-      <List>
-        {["All mail", "Trash", "Spam"].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon className={styles.menuText}>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} className={styles.menuText} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
     </div>
   );
 

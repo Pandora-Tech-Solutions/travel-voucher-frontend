@@ -4,7 +4,7 @@ import { HYDRATE } from 'next-redux-wrapper'
 
 export const apiSlice = createApi({
   reducerPath: 'travelVoucherApi',
-  tagTypes: ['auth', 'users'],
+  tagTypes: ['auth', 'users', 'cards', 'companies'],
   endpoints: (builder) => ({}),
   baseQuery: fetchBaseQuery({ 
     baseUrl: process.env.NEXT_PUBLIC_API_URL, 

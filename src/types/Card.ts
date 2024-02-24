@@ -10,6 +10,7 @@ export interface CardHistoric {
 }
 
 export interface Card {
+  _id: string;
   cardNumber: string;
   userId: string;
   cardExpiration: Date;

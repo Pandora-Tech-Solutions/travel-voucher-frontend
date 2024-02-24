@@ -1,0 +1,36 @@
+[
+  {
+    "title": "Clientes",
+    "icon": "fa-users",
+    "url": "",
+    "nested": true,
+    "children": [
+      {
+        "title": "Clientes Pessoa Física",
+        "icon": "fa-users",
+        "url": "/cms/clients",
+        "nested": false
+      },
+      {
+        "title": "Clientes Pessoa Jurídica",
+        "icon": "fa-users",
+        "url": "/cms/companies",
+        "nested": false
+      }
+    ]
+  },
+  {
+    "title": "Cartões",
+    "icon": "fa-users",
+    "url": "/cms/cards",
+    "nested": false,
+    "children": []
+  },
+  {
+    "title": "Meus dados",
+    "icon": "fa-users",
+    "url": "/cms/my-profile",
+    "nested": false,
+    "children": []
+  }
+]

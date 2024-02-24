@@ -6,35 +6,26 @@ import { Box, Button } from "@mui/material";
 import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
 
 import {
-  useGetUsersQuery,
-  useRemoveUserMutation,
-} from "@/store/features/user-slice";
+  useGetCardsQuery,
+  useRemoveCardMutation,
+} from "@/store/features/card-slice";
 import { StyledDataGrid } from "../StyledDataGrid";
 
-const UserList: React.FC = () => {
+const CardsList: React.FC = () => {
+  const { data, isFetching, isError } = useGetCardsQuery({});
   const router = useRouter();
-  const { data, isFetching, isError } = useGetUsersQuery({});
-  const [deleteUser, deleteUserStatus] = useRemoveUserMutation();
 
-  const dataWithIds = data?.data.map((item) => ({
-    ...item,
-    id: item._id,
-  }));
-
-  const handleEditUser = (id: string) => {
-    router.push(`/cms/clients/${id}`);
+  const handleNewCard = () => {
+    router.push(`/cms/cards/new`);
   }
 
-  const handleNewUser = () => {
-    router.push(`/cms/clients/new`);
-  }
+  console.log(data)
 
   const columns: GridColDef[] = [
     { field: "id", headerName: "ID", flex: 1, minWidth: 200 },
-    { field: "name", headerName: "Nome", flex: 1, minWidth: 200 },
-    { field: "email", headerName: "E-mail", flex: 1, minWidth: 200 },
-    { field: "cpf", headerName: "CPF", flex: 1, minWidth: 200 },
-    { field: "rg", headerName: "RG", flex: 1, minWidth: 200 },
+    { field: "cardNumber", headerName: "Cartão", flex: 1, minWidth: 200 },
+    { field: "cardExpirationDate", headerName: "Validade", flex: 1, minWidth: 200 },
+    { field: "userId", headerName: "Cliente", flex: 1, minWidth: 200 },
     {
       field: "actions",
       type: "actions",
@@ -55,7 +46,7 @@ const UserList: React.FC = () => {
             key="edit"
             label="Edit"
             className="textPrimary"
-            onClick={() => handleEditUser(params.id as string)}
+            onClick={() => console.log(params.id as string)}
             color="inherit"
           />
           <GridActionsCellItem
@@ -63,7 +54,7 @@ const UserList: React.FC = () => {
             key="delete"
             label="Delete"
             className="textPrimary"
-            onClick={() => deleteUser(params.id as string)}
+            onClick={() => console.log(params.id as string)}
             color="inherit"
           />
         </Box>
@@ -83,10 +74,10 @@ const UserList: React.FC = () => {
       }}
     >
       <Box sx={{ my: 5, ml: "auto" }}>
-        <Button variant="contained" onClick={handleNewUser}>Cadastrar</Button>
+        <Button variant="contained" onClick={handleNewCard}>Cadastrar</Button>
       </Box>
       <StyledDataGrid
-        rows={dataWithIds || []}
+        rows={data || []}
         columns={columns}
         loading={isFetching}
         sx={{ scrollbarWidth: "thin", overflowX: "auto" }}
@@ -95,4 +86,4 @@ const UserList: React.FC = () => {
   );
 };
 
-export default UserList;
+export default CardsList;

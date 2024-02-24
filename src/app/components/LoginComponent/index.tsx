@@ -60,7 +60,7 @@ export default function LoginComponent() {
 
       if (data?.access_token) {
         dispatch(logIn({ access_token: data?.access_token, user: data?.user }));
-        router.push("/dashboard");
+        router.push("/cms");
       }
     },
     [dispatch, loginUser, router]
