@@ -1,5 +1,5 @@
-import UserList from "@/app/components/UserList";
+import CompanyList from "@/app/components/CompaniesList";
 
-const Clients = () =>  <UserList />;
+const CompanyClients = () =>  <CompanyList />;
 
-export default Clients;
+export default CompanyClients;

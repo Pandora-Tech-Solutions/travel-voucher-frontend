@@ -60,8 +60,13 @@ export default function LoggedLayout(props: Props) {
 
   const drawer = (
     <div>
-      <Toolbar>
-        <Typography>Vale Viagem</Typography>
+      <Toolbar sx={{ p: '1rem' }}>
+        <Image
+          src="https://laiketurismo.com.br/wp-content/uploads/2022/03/logo-laike-turismo.png"
+          alt="Laiketurismo"
+          width={150}
+          height={100}
+        />
       </Toolbar>
       <List>
         {menuItems.map((text, index) => (

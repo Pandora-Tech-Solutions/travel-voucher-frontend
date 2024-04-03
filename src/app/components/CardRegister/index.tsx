@@ -39,7 +39,7 @@ const CardRegister: React.FC<IUserRegisterProps> = ({
 
   const UserSchema = z.object({
     cardNumber: z.string().min(1, { message: "Informe o número do cartão" }),
-    cardExpiration: z.string().min(1, { message: "Informe o número do cartão" }),
+    cardExpirationDate: z.string().min(1, { message: "Informe o número do cartão" }),
   });
 
   const {
@@ -106,15 +106,15 @@ const CardRegister: React.FC<IUserRegisterProps> = ({
                   <Grid item xs={12} lg={6}>
                     <TextField
                       focused
-                      id="cardExpiration"
+                      id="cardExpirationDate"
                       label="Data de validade"
-                      {...register("cardExpiration")}
+                      {...register("cardExpirationDate")}
                       variant="outlined"
                       type="date"
                       fullWidth
                       size="small"
-                      error={!!errors?.cardExpiration}
-                      helperText={(errors?.cardExpiration?.message || "").toString()}
+                      error={!!errors?.cardExpirationDate}
+                      helperText={(errors?.cardExpirationDate?.message || "").toString()}
                     />
                   </Grid>
                 </Grid>

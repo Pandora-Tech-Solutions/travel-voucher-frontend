@@ -46,6 +46,10 @@ export const cardApiSlice = apiSlice.injectEndpoints({
       query: (id) => `${endpointUrl}/${id}`,
       providesTags: ['cards'],
     }),
+    getCardByUserId: query({
+      query: (userId) => `${endpointUrl}/by-user/${userId}`,
+      providesTags: ['cards'],
+    }),
     createCard: mutation<Card, Card>({
       query: (card) => ({ url: endpointUrl, method: 'POST', body: card }),
       invalidatesTags: ['cards'],
@@ -72,4 +76,6 @@ export const {
   useLazyGetCardQuery,
   useUpdateCardMutation,
   useLazyGetCardsQuery,
+  useGetCardByUserIdQuery,
+  useLazyGetCardByUserIdQuery,
 } = cardApiSlice

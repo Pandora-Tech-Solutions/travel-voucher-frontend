@@ -72,7 +72,7 @@ const CompanyRegister: React.FC<ICompanyRegisterProps> = ({
     defaultValues:
       {
         ...company,
-        address: { ...company?.address, number: company?.address.number.toString() },
+        address: { ...company?.address, number: company?.address?.number.toString() },
       } || {},
   });
 

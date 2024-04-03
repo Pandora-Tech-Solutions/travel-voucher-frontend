@@ -13,6 +13,6 @@ export interface Card {
   _id: string;
   cardNumber: string;
   userId: string;
-  cardExpiration: Date;
+  cardExpirationDate: Date;
   historic: CardHistoric[];
 }

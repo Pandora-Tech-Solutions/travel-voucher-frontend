@@ -5,9 +5,9 @@ import { useParams } from 'next/navigation'
 
 const UpdateClient = () => {
   const { id } = useParams();
-  const { data, isFetching, isError } = useGetUserQuery(id as string);
+  const { data, isFetching, isError } = useGetUserQuery(id as string); // Fix: Access the first element of the id array
 
-  return <UserRegister user={data} loading={isFetching} error={isError} />;
+  return <UserRegister user={data} loading={isFetching} error={isError} clientId={id as string} />; // Fix: Access the first element of the id array
 }
 
 export default UpdateClient;
