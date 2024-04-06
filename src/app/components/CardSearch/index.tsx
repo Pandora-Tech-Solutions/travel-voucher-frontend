@@ -1,8 +1,9 @@
+import { useCallback, useState } from "react";
 import {
   useGetCardByUserIdQuery,
   useGetCardsQuery,
+  useUpdateCardMutation,
 } from "@/store/features/card-slice";
-import { useAppSelector } from "@/store/hooks";
 import {
   Autocomplete,
   Box,
@@ -14,15 +15,24 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { Add, HorizontalRule } from "@mui/icons-material";
 import ValueModal from "./ValueModal";
-import { useState } from "react";
+import { User } from "@/types/User";
+import { Card } from "@/types/Card";
+import { GridActionsCellItem, GridColDef } from "@mui/x-data-grid";
+import { StyledDataGrid } from "../StyledDataGrid";
 
 interface CardSearchProps {
-  clientId?: string;
+  clientId: string;
+  user: User;
 }
 
-const CardSearch: React.FC<CardSearchProps> = ({ clientId }) => {
+const CardSearch: React.FC<CardSearchProps> = ({ clientId, user }) => {
   const [openModal, setOpenModal] = useState(false);
+  const [selectedCard, setSelectedCard] = useState<Card | null>(null);
+  const [isCredit, setIsCredit] = useState(false);
+  const [cardToOperation, setCardToOperation] = useState<Card | null>(null);
+
   const {
     data: userCards,
     isFetching,
@@ -33,11 +43,113 @@ const CardSearch: React.FC<CardSearchProps> = ({ clientId }) => {
     data: cards,
     isFetching: isFetchingCards,
     isError: isErrorCards,
-  } = useGetCardsQuery({});
+  } = useGetCardsQuery({onlyWithoutUser: true});
 
-  console.log(userCards);
+  const [updateCard] = useUpdateCardMutation();
 
-  console.log(cards);
+  const addCardUser = async (card: Card) => {
+    try {
+      await updateCard({ ...card, userId: user._id });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleOpenModal = (isCredit: boolean, card: Card) => {
+    setIsCredit(isCredit);
+    setCardToOperation(card);
+    setOpenModal(true);
+  };
+
+  const cardTotal = useCallback(
+    (card: Card) =>
+      card?.historic.reduce((acc: number, operation: any) => {
+        if (operation.operationType === "credit") {
+          return acc + operation.value;
+        } else if (operation.operationType === "debit") {
+          return acc - operation.value;
+        } else {
+          return acc;
+        }
+      }, 0),
+    []
+  );
+
+  const isCardValid = useCallback((cardExpirationDate: string) => {
+    const expirationDate = new Date(cardExpirationDate);
+    const today = new Date();
+    today.setHours(23, 59, 59, 999);
+    return expirationDate < today ;
+  }, [])
+
+  const columns: GridColDef[] = [
+    { field: "id", headerName: "Cartão", flex: 1, width: 200, valueGetter: (params) => params.row.cardNumber},
+    {
+      field: "cardExpirationDate",
+      headerName: "Validade",
+      flex: 1,
+      minWidth: 200,
+      renderCell: (params) => {
+        const isExpired = isCardValid(params.row?.cardExpirationDate);
+        return (
+          <Typography
+            color={isExpired ? "error" : "green"}
+            variant="body1"
+          >
+            {new Date(params.row?.cardExpirationDate)?.toLocaleDateString(
+              "pt-BR"
+            )}
+          </Typography>
+        );
+      }
+    },
+    {
+      field: "total",
+      headerName: "Saldo",
+      flex: 1,
+      minWidth: 200,
+      valueGetter: (params) =>
+        `R$${cardTotal(params.row as Card)
+          .toFixed(2)
+          .replace(".", ",")}`,
+    },
+    {
+      field: "actions",
+      type: "actions",
+      headerName: "Ações",
+      width: 100,
+      cellClassName: "actions",
+      resizable: true,
+      renderCell: (params) => (
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-around",
+            width: "100%",
+          }}
+        >
+          <GridActionsCellItem
+            icon={<Add color="info" />}
+            key="edit"
+            label="Edit"
+            className="textPrimary"
+            onClick={() => handleOpenModal(true, params.row as Card)}
+            color="inherit"
+            disabled={isCardValid(params.row?.cardExpirationDate)}
+          />
+          <GridActionsCellItem
+            icon={<HorizontalRule color="error" />}
+            key="delete"
+            label="Delete"
+            className="textPrimary"
+            onClick={() => handleOpenModal(false, params.row as Card)}
+            color="inherit"
+            disabled={isCardValid(params.row?.cardExpirationDate)}
+          />
+        </Box>
+      ),
+    },
+  ];
 
   return (
     !isFetching &&
@@ -51,6 +163,7 @@ const CardSearch: React.FC<CardSearchProps> = ({ clientId }) => {
               option.cardNumber
             }
             style={{ width: 300 }}
+            onChange={(_, value) => setSelectedCard(value as Card)}
             renderInput={(params) => (
               <TextField
                 {...params}
@@ -59,27 +172,25 @@ const CardSearch: React.FC<CardSearchProps> = ({ clientId }) => {
               />
             )}
           />
-          <Button variant="contained" color="primary" sx={{ mx: 2 }}>
+          <Button
+            variant="contained"
+            color="primary"
+            sx={{ mx: 2 }}
+            onClick={() => selectedCard && addCardUser(selectedCard)}
+          >
             Adicionar
           </Button>
         </Box>
         <Box sx={{ my: 5 }}>
           <Typography variant="h6">Cartões do cliente</Typography>
-          <List>
-            {userCards?.map((card: any) => (
-              <Paper key={card._id} sx={{ p: 2, my: 2 }}>
-                <ListItem sx={{ width: "100%" }}>
-                  {card.cardNumber}{" "}{new Date(card.cardExpirationDate).toLocaleDateString('pt-BR')}
-                  <Button onClick={() => setOpenModal(true)}>
-                    Adicionar crédito
-                  </Button>
-                  <Button onClick={() => setOpenModal(true)}>
-                    Debitar valor
-                  </Button>
-                </ListItem>
-              </Paper>
-            ))}
-          </List>
+          <StyledDataGrid
+            rows={
+              userCards?.map((item: any) => ({ ...item, id: item._id })) || []
+            }
+            columns={columns}
+            loading={isFetching}
+            sx={{ scrollbarWidth: "thin", overflowX: "auto" }}
+          />
         </Box>
         <Modal
           open={openModal}
@@ -90,7 +201,12 @@ const CardSearch: React.FC<CardSearchProps> = ({ clientId }) => {
             justifyContent: "center",
           }}
         >
-          <ValueModal />
+          <ValueModal
+            isCredit={isCredit}
+            card={cardToOperation as Card}
+            closeModal={() => setOpenModal(false)}
+            clientId={clientId}
+          />
         </Modal>
       </Box>
     )

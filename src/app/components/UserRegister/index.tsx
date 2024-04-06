@@ -43,7 +43,7 @@ const UserRegister: React.FC<IUserRegisterProps> = ({
       </Tabs>
       {value === 0 && <UserData user={user} />}
       {value === 1 && <CompanySearch companysSelected={user?.companies || []} setCompanys={() => ({})} />}
-      {value === 2 && <CardSearch clientId={clientId} />}
+      {value === 2 && <CardSearch clientId={clientId} user={user as any} />}
     </Box>
   );
 };

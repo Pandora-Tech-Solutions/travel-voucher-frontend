@@ -32,14 +32,14 @@ const cardSlice = createSlice({
   }
 })
 
-function getCards() {
-  return `${endpointUrl}`
+function getCards(args: any) {
+  return `${endpointUrl}${args ? `?${new URLSearchParams(args)}` : ''}`
 }
 
 export const cardApiSlice = apiSlice.injectEndpoints({
   endpoints: ({ query, mutation }) => ({
     getCards: query({
-      query: getCards,
+      query: (args) => getCards(args),
       providesTags: ['cards'],
     }),
     getCard: query<Card, string>({
