@@ -4,7 +4,14 @@ import styles from "./page.module.css";
 export default function Home() {
   return (
     <main className={styles.main}>
-      <h1>Aqui ficará a LP</h1>
+      <header>
+        <img src="/vercel.svg" alt="Laike Turismo Logo" className={styles.logo} />
+        <h1>Vale Viagem</h1>
+        <div className="heroBanner">
+          <img src="#" alt="Garanta seu Vale Viagem" />
+        </div>
+      </header>
+      
     </main>
   );
 }

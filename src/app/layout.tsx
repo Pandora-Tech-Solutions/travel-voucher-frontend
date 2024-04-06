@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import NextTopLoader from 'nextjs-toploader';
 import { Rubik } from "next/font/google";
 import "./globals.css";
 import ReduxProvider from "@/store/provider";
@@ -18,6 +19,7 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body className={rubik.className}>
+        <NextTopLoader />
         <ReduxProvider>{children}</ReduxProvider>
       </body>
     </html>

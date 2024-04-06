@@ -9,7 +9,7 @@ export interface User {
   rg?: string;
   phone: string;
   email: string;
-  password: string;
+  password?: string;
   passwordResetToken?: string;
   passwordResetExpires?: Date;
   address: Address;

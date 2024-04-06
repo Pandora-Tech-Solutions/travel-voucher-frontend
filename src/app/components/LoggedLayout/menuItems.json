@@ -29,7 +29,7 @@
   {
     "title": "Meus dados",
     "icon": "fa-users",
-    "url": "/cms/my-profile",
+    "url": "/cms/my-data",
     "nested": false,
     "children": []
   }
