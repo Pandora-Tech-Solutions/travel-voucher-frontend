@@ -26,7 +26,11 @@ import {
   Alert,
 } from "@mui/material";
 
-import { LoginPayload, logIn, useLoginUserMutation } from "@/store/features/auth-slice";
+import {
+  LoginPayload,
+  logIn,
+  useLoginUserMutation,
+} from "@/store/features/auth-slice";
 
 export default function LoginComponent() {
   const [openAlert, setOpenAlert] = useState<boolean>(false);
@@ -119,9 +123,7 @@ export default function LoginComponent() {
           helperText={(errors?.email?.message || "").toString()}
         />
         <FormControl sx={{ marginY: "1rem" }} variant="outlined">
-          <InputLabel htmlFor="outlined-adornment-password">
-            Senha
-          </InputLabel>
+          <InputLabel htmlFor="outlined-adornment-password">Senha</InputLabel>
           <OutlinedInput
             id="outlined-adornment-password"
             type={showPassword ? "text" : "password"}
@@ -142,7 +144,7 @@ export default function LoginComponent() {
             label="Password"
           />
           {errors?.password?.message && (
-            <FormHelperText sx={{ color: '#D32F2F' }}>
+            <FormHelperText sx={{ color: "#D32F2F" }}>
               {errors?.password?.message.toString()}
             </FormHelperText>
           )}
@@ -165,7 +167,12 @@ export default function LoginComponent() {
             </FormGroup>
           </Grid>
           <Grid item sx={{ display: "flex", alignItems: "center" }}>
-            <Button variant="text" size="small" sx={{ fontSize: "0.8rem" }}>
+            <Button
+              variant="text"
+              size="small"
+              sx={{ fontSize: "0.8rem" }}
+              onClick={() => (window.location.href = "/forgot-pass")}
+            >
               Esqueceu sua senha?
             </Button>
           </Grid>
@@ -180,7 +187,9 @@ export default function LoginComponent() {
           >
             Novo por aqui?
           </Typography>
-          <Button variant="text" sx={{ mx: "auto" }}>Criar conta</Button>
+          <Button variant="text" sx={{ mx: "auto" }}>
+            Criar conta
+          </Button>
         </Box>
       </Box>
       <Snackbar

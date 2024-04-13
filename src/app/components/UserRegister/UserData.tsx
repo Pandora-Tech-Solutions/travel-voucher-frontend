@@ -54,7 +54,7 @@ const UserData: React.FC<UserDataProps> = ({ user }) => {
     defaultValues:
       {
         ...user,
-        address: { ...user?.address, number: user?.address.number.toString() },
+        address: { ...user?.address, number: user?.address?.number.toString() },
       } || {},
   });
 

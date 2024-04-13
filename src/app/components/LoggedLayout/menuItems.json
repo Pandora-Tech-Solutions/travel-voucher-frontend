@@ -1,19 +1,20 @@
 [
   {
     "title": "Clientes",
-    "icon": "fa-users",
+    "icon": "supervised_user_circle",
     "url": "",
     "nested": true,
+    "roles": ["admin"],
     "children": [
       {
         "title": "Clientes Pessoa Física",
-        "icon": "fa-users",
+        "icon": "person",
         "url": "/cms/clients",
         "nested": false
       },
       {
         "title": "Clientes Pessoa Jurídica",
-        "icon": "fa-users",
+        "icon": "business",
         "url": "/cms/companies",
         "nested": false
       }
@@ -21,15 +22,33 @@
   },
   {
     "title": "Cartões",
-    "icon": "fa-users",
+    "icon": "credit_card",
     "url": "/cms/cards",
+    "nested": false,
+    "roles": ["admin"],
+    "children": []
+  },
+  {
+    "title": "Minhas Empresas",
+    "icon": "business",
+    "roles": ["company_admin"],
+    "url": "/dashboard/my-companies",
+    "nested": false,
+    "children": []
+  },
+  {
+    "title": "Meus Cartões",
+    "icon": "credit_card",
+    "roles": ["company_admin", "user"],
+    "url": "/dashboard/my-cards",
     "nested": false,
     "children": []
   },
   {
     "title": "Meus dados",
-    "icon": "fa-users",
+    "icon": "badge",
     "url": "/cms/my-data",
+    "roles": ["company_admin", "user", "admin"],
     "nested": false,
     "children": []
   }

@@ -14,20 +14,22 @@ import {
   Toolbar,
   Box,
   Drawer,
-  Typography,
   Collapse,
+  Icon,
+  Button,
 } from "@mui/material";
 
-import MailIcon from "@mui/icons-material/Mail";
 import MenuIcon from "@mui/icons-material/Menu";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 import { theme } from "@/app/theme";
 import styles from "./styles.module.css";
 
 import menuItems from "./menuItems.json";
-import { Router } from "next/router";
 import { useRouter } from "next/navigation";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+
+import { logOut } from "../../../store/features/auth-slice";
 
 const drawerWidth = 280;
 
@@ -40,6 +42,9 @@ export default function LoggedLayout(props: Props) {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [isClosing, setIsClosing] = React.useState(false);
   const [open, setOpen] = React.useState(false);
+
+  const { user } = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
 
   const handleDrawerClose = () => {
     setIsClosing(true);
@@ -59,8 +64,8 @@ export default function LoggedLayout(props: Props) {
   const router = useRouter();
 
   const drawer = (
-    <div>
-      <Toolbar sx={{ p: '1rem' }}>
+    <Box display="flex" flexDirection="column" p={1}>
+      <Toolbar sx={{ p: "1rem" }}>
         <Image
           src="https://laiketurismo.com.br/wp-content/uploads/2022/03/logo-laike-turismo.png"
           alt="Laiketurismo"
@@ -68,54 +73,67 @@ export default function LoggedLayout(props: Props) {
           height={100}
         />
       </Toolbar>
-      <List>
-        {menuItems.map((text, index) => (
-          <>
-            <ListItem key={index} disablePadding>
-              <ListItemButton
-                onClick={() => {
-                  text.nested ? setOpen(!open) : router.push(text.url);
-                }}
-              >
-                <ListItemIcon className={styles.menuText}>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText
-                  primary={text.title}
-                  className={styles.menuText}
-                />
-              </ListItemButton>
-            </ListItem>
-            <Collapse in={open} timeout="auto" unmountOnExit>
-              <List>
-                {text.children.map((child, idx) => (
-                  <ListItem
-                    key={idx}
-                    disablePadding
-                    className={styles.menuText}
-                  >
-                    <ListItemButton
-                      component="a"
-                      href={child.url}
-                      className={styles.menuText}
-                    >
-                      <ListItemIcon className={styles.menuText}>
-                        {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                      </ListItemIcon>
-                      <ListItemText
-                        primary={child.title}
-                        className={styles.menuText}
-                      />
-                    </ListItemButton>
-                  </ListItem>
-                ))}
-              </List>
-            </Collapse>
-          </>
-        ))}
-      </List>
       <Divider className={styles.menuDivider} />
-    </div>
+      <List>
+        {menuItems.map(
+          (text, index) =>
+            user.roles.some((role) => text.roles.includes(role)) && (
+              <>
+                <ListItem key={index} disablePadding>
+                  <ListItemButton
+                    onClick={() => {
+                      text.nested ? setOpen(!open) : router.push(text.url);
+                    }}
+                  >
+                    <ListItemIcon className={styles.menuText}>
+                      <Icon className={styles.menuText} fontSize="medium">
+                        {text.icon}
+                      </Icon>
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={text.title}
+                      className={styles.menuText}
+                    />
+                  </ListItemButton>
+                </ListItem>
+                <Collapse in={open} timeout="auto" unmountOnExit>
+                  <List>
+                    {text.children.map((child, idx) => (
+                      <ListItem
+                        key={idx}
+                        disablePadding
+                        className={styles.menuText}
+                      >
+                        <ListItemButton
+                          component="a"
+                          href={child.url}
+                          className={styles.menuText}
+                        >
+                          <ListItemIcon className={styles.menuText}>
+                            <Icon className={styles.menuText} fontSize="medium">
+                              {child.icon}
+                            </Icon>
+                          </ListItemIcon>
+                          <ListItemText
+                            primary={child.title}
+                            className={styles.menuText}
+                          />
+                        </ListItemButton>
+                      </ListItem>
+                    ))}
+                  </List>
+                </Collapse>
+              </>
+            )
+        )}
+      </List>
+      <Button
+        sx={{ mt: 5, color: "#fff", fontWeight: 700, fontSize: "1rem" }}
+        onClick={() => dispatch(logOut())}
+      >
+        <LogoutIcon sx={{ mr: 2 }} /> Sair
+      </Button>
+    </Box>
   );
 
   return (

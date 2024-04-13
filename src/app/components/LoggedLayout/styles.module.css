@@ -5,3 +5,9 @@
 .menuDivider {
   border-color: var(--brand-3);
 }
+
+.logoutButton {
+  color: var(--brand-7);
+  margin: 2.5rem auto;
+  width: 90%;
+}
