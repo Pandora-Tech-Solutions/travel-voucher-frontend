@@ -47,6 +47,7 @@ function parseQueryParams(params: IUserQuery = { limit: 10, page: 1 }) {
   if (params.page) query.append('page', params.page.toString())
   if (params.limit) query.append('limit', params.limit.toString())
   if (params.search) query.append('search', params.search)
+  if (params.role) query.append('role', params.role)
   return query.toString()
 }
 
@@ -57,7 +58,7 @@ function getUsers(params: IUserQuery) {
 export const userApiSlice = apiSlice.injectEndpoints({
   endpoints: ({ query, mutation }) => ({
     getUsers: query<IInitialUsersState, IUserQuery>({
-      query: getUsers,
+      query: (args) => getUsers(args),
       providesTags: ['users'],
     }),
     getUser: query<User, string>({

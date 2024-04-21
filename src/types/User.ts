@@ -26,5 +26,6 @@ export interface IUserQuery {
   page?: number;
   limit?: number;
   search?: string;
+  role?: string;
 }
 

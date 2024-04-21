@@ -13,7 +13,7 @@ import { StyledDataGrid } from "../StyledDataGrid";
 
 const UserList: React.FC = () => {
   const router = useRouter();
-  const { data, isFetching, isError } = useGetUsersQuery({});
+  const { data, isFetching, isError } = useGetUsersQuery({ role: "user" } as any);
   const [deleteUser, deleteUserStatus] = useRemoveUserMutation();
 
   const dataWithIds = data?.data.map((item) => ({
