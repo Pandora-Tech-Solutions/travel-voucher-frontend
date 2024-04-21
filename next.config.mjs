@@ -6,6 +6,9 @@ const nextConfig = {
       'laiketurismo.com.br',
     ],
   },
+  experimental: {
+    missingSuspenseWithCSRBailout: false,
+  },
 };
 
 export default nextConfig;

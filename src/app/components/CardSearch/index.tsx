@@ -189,7 +189,7 @@ const CardSearch: React.FC<CardSearchProps> = ({ clientId, user }) => {
             }
             columns={columns}
             loading={isFetching}
-            sx={{ scrollbarWidth: "thin", overflowX: "auto" }}
+            sx={{ scrollbarWidth: "thin", overflowX: "auto", minHeight: 200 }}
           />
         </Box>
         <Modal

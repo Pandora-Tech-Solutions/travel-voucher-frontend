@@ -1,14 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { apiSlice } from './api-slice'
+import { User } from '@/types/User'
 
 export interface AuthState {
   access_token: string
-  user: {
-    _id: string
-    email: string,
-    name: string,
-    roles: string[] 
-  }
+  user: User
 }
 
 export interface LoginPayload {
@@ -23,6 +19,20 @@ const initialState = {
     email: "",
     name: "",
     roles: [],
+    companies: [],
+    address: {
+      street: "",
+      city: "",
+      state: "",
+      zip: "",
+      neighborhood: "",
+      number: "",
+      complement: "",
+      zipcode: ""
+    },
+    cpf: "",
+    phone: "",
+    rg: "",
   }
 } as AuthState
 

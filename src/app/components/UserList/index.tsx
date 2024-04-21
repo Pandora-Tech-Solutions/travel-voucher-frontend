@@ -30,10 +30,9 @@ const UserList: React.FC = () => {
   }
 
   const columns: GridColDef[] = [
-    { field: "id", headerName: "ID", flex: 1, minWidth: 200 },
+    { field: "id", headerName: "CPF", flex: 1, minWidth: 200, valueGetter: (params) => params.row.cpf},
     { field: "name", headerName: "Nome", flex: 1, minWidth: 200 },
     { field: "email", headerName: "E-mail", flex: 1, minWidth: 200 },
-    { field: "cpf", headerName: "CPF", flex: 1, minWidth: 200 },
     { field: "rg", headerName: "RG", flex: 1, minWidth: 200 },
     {
       field: "actions",

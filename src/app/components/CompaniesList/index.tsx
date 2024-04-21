@@ -30,10 +30,9 @@ const CompanyList: React.FC = () => {
   }
 
   const columns: GridColDef[] = [
-    { field: "id", headerName: "ID", flex: 1, minWidth: 200 },
+    { field: "id", headerName: "CNPJ", flex: 1, minWidth: 200, valueGetter: (params) => params.row.cnpj },
     { field: "fantasyName", headerName: "Nome Fantasia", flex: 1, minWidth: 200 },
     { field: "companyName", headerName: "Razão Social", flex: 1, minWidth: 200 },
-    { field: "cnpj", headerName: "CNPJ", flex: 1, minWidth: 200 },
     {
       field: "actions",
       type: "actions",

@@ -26,6 +26,7 @@ import {
 } from "@/store/features/company-slice";
 import { useRouter } from "next/navigation";
 import { Company } from "@/types/Company";
+import { cnpjMask, phoneMask, zipcodeMask } from "@/utils/masks";
 
 interface ICompanyRegisterProps {
   company?: Company;
@@ -62,6 +63,18 @@ const CompanyRegister: React.FC<ICompanyRegisterProps> = ({
       state: z.string().min(1, { message: "Informe o estado" }),
     }),
   });
+
+  const handleCnpjChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    event.target.value = cnpjMask(event.target.value);
+  };
+
+  const handlePhoneChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    event.target.value = phoneMask(event.target.value);
+  }
+
+  const handleZipCodeChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    event.target.value = zipcodeMask(event.target.value);
+  }
 
   const {
     register,
@@ -147,6 +160,7 @@ const CompanyRegister: React.FC<ICompanyRegisterProps> = ({
                       size="small"
                       error={!!errors?.cnpj}
                       helperText={(errors?.cnpj?.message || "").toString()}
+                      onChange={handleCnpjChange}
                     />
                   </Grid>
                   <Grid item xs={12} lg={6}>
@@ -159,6 +173,7 @@ const CompanyRegister: React.FC<ICompanyRegisterProps> = ({
                       size="small"
                       error={!!errors?.phone}
                       helperText={(errors?.phone?.message || "").toString()}
+                      onChange={handlePhoneChange}
                     />
                   </Grid>
                   <Grid item xs={12} lg={6}>
@@ -198,6 +213,7 @@ const CompanyRegister: React.FC<ICompanyRegisterProps> = ({
                       helperText={(
                         errors?.address?.zipcode?.message || ""
                       ).toString()}
+                      onChange={handleZipCodeChange}
                     />
                   </Grid>
                   <Grid item xs={12} lg={6}>

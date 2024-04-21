@@ -35,6 +35,7 @@ import {
 export default function LoginComponent() {
   const [openAlert, setOpenAlert] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const dispatch = useDispatch();
   const router = useRouter();
@@ -79,7 +80,10 @@ export default function LoginComponent() {
   };
 
   useEffect(() => {
-    if (status && status?.isError) setOpenAlert(true);
+    if (status && status?.isError) {
+      setLoading(false);
+      setOpenAlert(true);
+    }
   }, [status]);
 
   return (
@@ -177,10 +181,10 @@ export default function LoginComponent() {
             </Button>
           </Grid>
         </Grid>
-        <Button sx={{ marginTop: "1.5rem" }} variant="contained" type="submit">
-          Entrar
+        <Button sx={{ marginTop: "1.5rem" }} variant="contained" type="submit" disabled={loading}>
+          {loading ? 'Aguarde...' : 'Entrar'}
         </Button>
-        <Box sx={{ display: "flex", flexDirection: "column" }}>
+        {/* <Box sx={{ display: "flex", flexDirection: "column" }}>
           <Typography
             variant="body2"
             sx={{ marginTop: "1rem", textAlign: "center" }}
@@ -190,7 +194,7 @@ export default function LoginComponent() {
           <Button variant="text" sx={{ mx: "auto" }}>
             Criar conta
           </Button>
-        </Box>
+        </Box> */}
       </Box>
       <Snackbar
         open={openAlert}

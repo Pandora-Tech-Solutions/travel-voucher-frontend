@@ -45,6 +45,14 @@
     "children": []
   },
   {
+    "title": "Novo Usuário",
+    "icon": "person",
+    "url": "/cms/new-user",
+    "nested": false,
+    "roles": ["admin"],
+    "children": []
+  },
+  {
     "title": "Meus dados",
     "icon": "badge",
     "url": "/cms/my-data",

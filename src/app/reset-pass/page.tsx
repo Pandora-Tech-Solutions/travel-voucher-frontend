@@ -1,12 +1,8 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Alert, Snackbar } from "@mui/material";
 import ResetPassComponent from "../components/ResetPassComponent";
-
-interface ResetPasswordProps {
-  token: string;
-}
 
 const ResetPassword = () => {
   const [openAlert, setOpenAlert] = useState<boolean>(false);
@@ -21,7 +17,7 @@ const ResetPassword = () => {
   }, [token]);
 
   return (
-    <>
+    <Suspense>
       <ResetPassComponent token={token || ''} />
       <Snackbar
         open={openAlert}
@@ -37,7 +33,7 @@ const ResetPassword = () => {
           Token não fornecido
         </Alert>
       </Snackbar>
-    </>
+    </Suspense>
   );
 };
 

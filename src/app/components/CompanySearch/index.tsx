@@ -1,73 +1,108 @@
 import { theme } from "@/app/theme";
 import { useGetCompaniesQuery } from "@/store/features/company-slice";
-import {
-  Autocomplete,
-  Box,
-  Button,
-  List,
-  ListItem,
-  Paper,
-  TextField,
-} from "@mui/material";
+import { useUpdateUserMutation } from "@/store/features/user-slice";
+import { useAppSelector } from "@/store/hooks";
+import { Autocomplete, Box, Button, TextField } from "@mui/material";
+import { GridColDef } from "@mui/x-data-grid";
 import { useState } from "react";
+import { StyledDataGrid } from "../StyledDataGrid";
 
 interface CompanySearchProps {
   setCompanys: (companys: any) => void;
   companysSelected: any[];
 }
 
-const CompanySearch: React.FC<CompanySearchProps> = ({
-  companysSelected,
-  setCompanys,
-}) => {
+const CompanySearch: React.FC<CompanySearchProps> = ({ companysSelected }) => {
   const { data, isFetching, isError } = useGetCompaniesQuery({});
+  const [updateUser, updateUserStatus] = useUpdateUserMutation();
+  const { user } = useAppSelector((state) => state.auth);
+  const [select, setSelect] = useState(companysSelected || []);
 
   const handleSelectCompany = (option: any) => {
     const selectedCompany = data?.data.find((item) => item._id === option.id);
-    setCompanys([...companysSelected, selectedCompany]);
+    setSelect(selectedCompany ? [...select, selectedCompany] : [select]);
   };
+
+  const handleUpdateUser = () => {
+    try {
+      updateUser({
+        ...user,
+        _id: user._id,
+        companies: [
+          ...(user.companies as any),
+          ...select.map((item) => item._id),
+        ],
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const dataWithIds = data?.data.map((item) => ({
+    ...item,
+    id: item._id,
+  }));
+
+  const columns: GridColDef[] = [
+    {
+      field: "id",
+      headerName: "CNPJ",
+      flex: 1,
+      minWidth: 200,
+      valueGetter: (params) => params.row.cnpj,
+    },
+    {
+      field: "fantasyName",
+      headerName: "Nome Fantasia",
+      flex: 1,
+      minWidth: 200,
+    },
+    {
+      field: "companyName",
+      headerName: "Razão Social",
+      flex: 1,
+      minWidth: 200,
+    },
+  ];
 
   return (
     <>
-      <Button
-        sx={{
-          fontWeight: 400,
-          fontSize: 12,
-          borderColor: theme.palette.primary.main,
-          color: theme.palette.primary.main,
-          mb: 2,
-        }}
-        variant="text"
-        onClick={() => ({})}
-      >
-        Adicionar empresa que representa
-      </Button>
       <Box flexDirection="column">
-        <Autocomplete
-          id="company-search"
-          options={
-            data?.data.map(
-              (item) => ({ id: item._id, label: item.companyName } as any)
-            ) || []
-          }
-          onChange={(_, newValue) => handleSelectCompany(newValue)}
-          getOptionLabel={(option) => option.label}
-          style={{ width: 300, margin: "0 0 0 auto" }}
-          renderInput={(params) => (
-            <TextField {...params} placeholder="Empresa" />
-          )}
-        />
-        {companysSelected.length ? (
-          <Paper elevation={3} sx={{ my: 2 }}>
-            <List>
-              {companysSelected.map((company) => (
-                <ListItem key={company.companyName}>
-                  {company.companyName}
-                </ListItem>
-              ))}
-            </List>
-          </Paper>
-        ) : null}
+        <Box display="flex" flexDirection="row">
+          <Autocomplete
+            id="company-search"
+            sx={{ minWidth: 180, mr: 2 }}
+            options={
+              data?.data.map(
+                (item) => ({ id: item._id, label: item.companyName } as any)
+              ) || []
+            }
+            onChange={(_, newValue) => handleSelectCompany(newValue)}
+            getOptionLabel={(option) => option.label}
+            renderInput={(params) => (
+              <TextField {...params} placeholder="Empresa" />
+            )}
+          />
+          <Button
+            sx={{
+              fontWeight: 700,
+              fontSize: 12,
+              maxWidth: 180,
+            }}
+            variant="contained"
+            onClick={handleUpdateUser}
+          >
+            Adicionar empresa que representa
+          </Button>
+        </Box>
+        <Box sx={{ my: 2 }}>
+          <StyledDataGrid
+            rows={dataWithIds || []}
+            columns={columns}
+            loading={isFetching}
+            sx={{ scrollbarWidth: "thin", overflowX: "auto" }}
+          />
+        </Box>
       </Box>
     </>
   );
