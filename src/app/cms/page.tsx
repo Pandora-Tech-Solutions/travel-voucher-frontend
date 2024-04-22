@@ -1,9 +1,9 @@
-import Image from "next/image";
+import { Typography } from "@mui/material";
 
 export default function Home() {
   return (
     <main>
-      <h1>Aqui ficará o CMS</h1>
+      <Typography variant="body2">Gerenciador de Vale viagens Laike Turismo</Typography>
     </main>
   );
 }
