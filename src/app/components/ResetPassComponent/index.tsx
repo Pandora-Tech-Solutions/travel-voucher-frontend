@@ -7,25 +7,56 @@ import {
   Box,
   Button,
   Paper,
-  TextField,
   Typography,
   Snackbar,
   Alert,
+  FormControl,
+  InputLabel,
+  OutlinedInput,
+  InputAdornment,
+  IconButton,
+  FormHelperText,
 } from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 interface ResetPasswordProps {
   token: string;
+  newUser?: boolean;
 }
 
-const ResetPassComponent: React.FC<ResetPasswordProps> = ({ token }) => {
+const ResetPassComponent: React.FC<ResetPasswordProps> = ({ token, newUser = false }) => {
   const [openAlert, setOpenAlert] = useState<boolean>(false);
   const [success, setSuccess] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
 
-  const ResetPassSchema = z.object({
-    password: z
-      .string()
-      .min(6, { message: "Senha deve ter no mínimo 6 caracteres" }),
-  });
+  const handleClickShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const handleClickShowConfirmPassword = () => {
+    setShowConfirmPassword(!showConfirmPassword);
+  };
+
+  const handleMouseDownPassword = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
+  };
+
+  const ResetPassSchema = z
+    .object({
+      password: z
+        .string()
+        .min(6, { message: "Senha deve ter no mínimo 6 caracteres" }),
+      confirmPassword: z.string().min(6, {
+        message: "Senha deve ter no mínimo 6 caracteres",
+      }),
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+      message: "As senhas não coincidem",
+      path: ["confirmPassword"],
+    });
 
   const {
     register,
@@ -82,23 +113,68 @@ const ResetPassComponent: React.FC<ResetPasswordProps> = ({ token }) => {
         onSubmit={handleSubmit(handleForgotPass)}
       >
         <Typography variant="h4" component="h1" sx={{ textAlign: "center" }}>
-          Redefina sua senha
+          {newUser ? 'Crie sua senha' : 'Redefina sua senha'}
         </Typography>
         <Typography
           variant="body1"
           sx={{ marginBottom: "2rem", textAlign: "center" }}
         >
-          Digite sua nova senha.
+          Entre com a senha escolhida.
         </Typography>
-        <TextField
-          sx={{ marginBottom: "1rem" }}
-          id="password"
-          label="Senha"
-          variant="outlined"
-          {...register("password")}
-          error={!!errors?.password}
-          helperText={(errors?.password?.message || "").toString()}
-        />
+        <FormControl sx={{ marginY: "1rem" }} variant="outlined">
+          <InputLabel htmlFor="outlined-adornment-password">Senha</InputLabel>
+          <OutlinedInput
+            id="outlined-adornment-password"
+            type={showPassword ? "text" : "password"}
+            {...register("password")}
+            error={!!errors?.password}
+            endAdornment={
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={handleClickShowPassword}
+                  onMouseDown={handleMouseDownPassword}
+                  edge="end"
+                >
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            }
+            label="Password"
+          />
+          {errors?.password?.message && (
+            <FormHelperText sx={{ color: "#D32F2F" }}>
+              {errors?.password?.message.toString()}
+            </FormHelperText>
+          )}
+        </FormControl>
+        <FormControl sx={{ marginY: "1rem" }} variant="outlined">
+          <InputLabel htmlFor="outlined-adornment-password">Confirme a senha</InputLabel>
+          <OutlinedInput
+            id="outlined-adornment-password"
+            type={showConfirmPassword ? "text" : "password"}
+            {...register("confirmPassword")}
+            error={!!errors?.confirmPassword}
+            endAdornment={
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={handleClickShowConfirmPassword}
+                  onMouseDown={handleClickShowConfirmPassword}
+                  edge="end"
+                >
+                  {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            }
+            label="confirmPassword"
+          />
+          {errors?.confirmPassword?.message && (
+            <FormHelperText sx={{ color: "#D32F2F" }}>
+              {errors?.confirmPassword?.message.toString()}
+            </FormHelperText>
+          )}
+        </FormControl>
         <Button sx={{ marginTop: "1.5rem" }} variant="contained" type="submit">
           Recuperar acesso
         </Button>
