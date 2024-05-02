@@ -3,6 +3,233 @@
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  padding: 6rem;
   min-height: 100vh;
+  width: 100vw;
+}
+
+.pageTitle {
+  display: none;
+}
+
+.heroBannerWrapper {
+  background: #030a38;
+  width: 100vw;
+  padding: 1rem 1rem 3rem 1rem;
+  margin: 0 auto;
+}
+
+.logo {
+  width: 224px;
+  height: 148px;
+  margin-bottom: 3rem;
+}
+
+.heroBanner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+
+  @media only screen and (min-width: 768px) {
+    margin: 0;
+    align-items: flex-start;
+    justify-content: flex-start;
+  }
+}
+
+.heroBanner img {
+  margin: 0 auto;
+
+  @media only screen and (min-width: 768px) {
+    margin: 0;
+    height: 90px;
+    width: auto;
+  }
+}
+
+.banner {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  width: 100vw;
+  height: 30vh;
+
+  @media only screen and (min-width: 768px) {
+    height: 55vh;
+  }
+}
+
+.banner img {
+  width: 100%;
+  height: 30vh;
+  object-fit: cover;
+
+  @media only screen and (min-width: 768px) {
+    height: 55vh;
+  }
+}
+
+.headerHomeWrapper {
+  max-width: 1300px;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  max-width: 1300px;
+}
+
+.bodyTitle {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 3rem;
+  color: #6866b1;
+  margin: 2rem auto 1rem;
+  max-width: 300px;
+  text-align: center;
+}
+
+.cardWrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 280px;
+  width: 100%;
+  max-width: 360px;
+  padding: 1rem;
+  margin: 0;
+  background: #fcfcfc;
+  border-radius: 10px;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  gap: 1rem;
+}
+
+.card h3 {
+  font-size: 1.35rem;
+  font-weight: 700;
+  line-height: 2rem;
+  color: #6866b1;
+}
+
+.card p {
+  font-size: 1rem;
+  line-height: 1.5rem;
+  color: #222;
+}
+
+.formWrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+  width: 100%;
+  max-width: 1300px;
+  padding: 1rem;
+
+  @media only screen and (min-width: 768px) {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+}
+
+.bg {
+  position: absolute;
+  min-height: 400px;
+  z-index: -1;
+  left: 0;
+  right: 0;
+
+  flex-direction: row;
+  justify-content: space-between;
+  background-image: url("/mountain.svg");
+  align-items: flex-end;
+  background-size: cover;
+  background-position: bottom;
+  opacity: 0.1;
+  margin-top: 290px;
+
+  @media only screen and (min-width: 768px) {
+    margin-top: 270px;
+  }
+}
+
+.formWrapper h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 2rem;
+  margin: 2rem auto 1rem;
+  color: #030a38;
+
+  text-align: center;
+  max-width: 260px;
+}
+
+.formWrapper b {
+  color: #6866b1;
+}
+
+.formWrapper form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  max-width: 420px;
+}
+
+.formWrapper input {
+  width: 100%;
+  height: 50px;
+  padding: 0.5rem;
+  border: 1px solid #ababab;
+  border-radius: 5px;
+}
+
+.formWrapper input::placeholder {
+  color: #ababab;
+}
+
+.formWrapper input:focus {
+  outline-color: #6866b1;
+}
+
+.formWrapper button {
+  width: 100%;
+  height: 50px;
+  background: #6866b1;
+  color: #fcfcfc;
+  font-size: 1rem;
+  font-weight: 700;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.formWrapper img {
+  margin-top: 1.5rem;
+  width: auto;
+  height: 290px;
+
+  @media only screen and (min-width: 768px) {
+    height: 350px;
+    margin: 0;
+    position: absolute;
+    right: 0;
+  }
 }
