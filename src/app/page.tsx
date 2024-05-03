@@ -1,6 +1,14 @@
 import Image from "next/image";
 
-import BannerImage from "../../images/banner-image.jpg"
+import {
+  Facebook,
+  WhatsApp,
+  Instagram,
+  YouTube,
+  LocalPhone,
+} from "@mui/icons-material";
+
+import BannerImage from "../../images/banner-image.jpg";
 import LaikeLogo from "../../public/laike.svg";
 import ValeViagem from "../../public/vale-viagem.svg";
 import Gift from "../../icons/gift.svg";
@@ -31,11 +39,17 @@ export default function Home() {
         </div>
       </header>
       <div className={styles.banner}>
-        <Image src={BannerImage} alt="Viaje com o Vale Viagem Laike" loading="eager" />
+        <Image
+          src={BannerImage}
+          alt="Viaje com o Vale Viagem Laike"
+          loading="eager"
+        />
       </div>
       <section className={styles.body}>
         <div>
-          <h2 className={styles.bodyTitle}>Viaje mais com o Vale-Viajem Laike</h2>
+          <h2 className={styles.bodyTitle}>
+            Viaje mais com o Vale-Viajem Laike
+          </h2>
           <div className={styles.cardWrapper}>
             <div className={styles.card}>
               <Image src={Money} alt="Viaje sem preocupações financeiras!" />
@@ -77,7 +91,10 @@ export default function Home() {
               </p>
             </div>
             <div className={styles.card}>
-              <Image src={Globe} alt="Explore seu país ou descubra novos horizontes!" />
+              <Image
+                src={Globe}
+                alt="Explore seu país ou descubra novos horizontes!"
+              />
               <h3>Explore seu país ou descubra novos horizontes!</h3>
               <p>
                 O Vale Viagem é aceito em destinos nacionais e internacionais,
@@ -86,7 +103,10 @@ export default function Home() {
               </p>
             </div>
             <div className={styles.card}>
-              <Image src={PigMoney} alt="Economize inteligentemente com o Vale Viagem!" />
+              <Image
+                src={PigMoney}
+                alt="Economize inteligentemente com o Vale Viagem!"
+              />
               <h3>Economize inteligentemente com o Vale Viagem!</h3>
               <p>
                 Planeje com antecedência, aproveite descontos exclusivos e
@@ -100,7 +120,9 @@ export default function Home() {
       <section className={styles.formWrapper}>
         <div className={styles.bg} />
         <form action="">
-          <h3>Entre em contato e fale com um de nossos <b>especialistas</b></h3>
+          <h3>
+            Entre em contato e fale com um de nossos <b>especialistas</b>
+          </h3>
           <input type="text" placeholder="Nome" />
           <input type="text" placeholder="E-mail" />
           <input type="text" placeholder="WhatsApp" />
@@ -108,13 +130,95 @@ export default function Home() {
         </form>
         <Image src={Travelers} alt="Entre em contato, e viva aventuras!S" />
       </section>
-      <footer>
-        <section>
+      <footer className={styles.footer}>
+        <div className={styles.sectionPhone}>
           <Image src={LaikeLogo} alt="Laike Turismo Logo" />
+          <div className={styles.contact}>
+            <Link href="tel:19987062611" className={styles.linkContact}>
+              <WhatsApp /> (19) 98706-2611
+            </Link>
+            <Link href="tel:1937220900" className={styles.linkContact}>
+              <LocalPhone /> (19) 3722-0900
+            </Link>
+            <Link
+              href="https://laiketurismo.solides.jobs/"
+              target="__blank"
+              className={styles.workWithUs}
+            >
+              FAÇA PARTE DO NOSSO TIME
+            </Link>
+          </div>
+        </div>
+        <section
+          style={{ marginTop: "2.5rem" }}
+          className={styles.sectionCompanyInfoLink}
+        >
+          <Link
+            href="https://laiketurismo.com.br/quem-somos"
+            target="__blank"
+            className={styles.companyInfoLink}
+          >
+            QUEM SOMOS
+          </Link>
+          <Link
+            href="https://laiketurismo.com.br/noticias"
+            target="__blank"
+            className={styles.companyInfoLink}
+          >
+            NOTÍCIAS
+          </Link>
+          <Link
+            href="https://laiketurismo.com.br/experiencias"
+            target="__blank"
+            className={styles.companyInfoLink}
+          >
+            EXPERIÊNCIAS
+          </Link>
+          <Link
+            href="https://laiketurismo.com.br/personalize-sua-viagem"
+            target="__blank"
+            className={styles.companyInfoLink}
+          >
+            PERSONALIZE SUA VIAGEM
+          </Link>
+          <Link
+            href="https://laiketurismo.com.br/politica-de-privacidade"
+            target="__blank"
+            className={styles.companyInfoLink}
+          >
+            POLÍTICA DE PRIVACIDADE
+          </Link>
+        </section>
+        <section className={styles.companyInfo}>
           <div>
-            <span>(19) 98706-2611</span>
-            <span>(19) 3722-0900</span>
-            <Link href="#">FAÇA PARTE DO NOSSO TIME</Link>
+            <p>
+              © {new Date().getFullYear()} Laike Turismo. Todos os direitos
+              reservados.
+            </p>
+            <p>
+              Razão Social: LAIKE TURISMO LTDA ME | CNPJ: 28.692.638/0001-50 |
+              CADASTUR 28.692.638/0001-50
+            </p>
+            <div className={styles.socialMedia}>
+              <Link
+                target="_blank"
+                href="https://www.facebook.com/laiketurismo"
+              >
+                <Facebook fontSize="large" />
+              </Link>
+              <Link
+                target="_blank"
+                href="https://www.instagram.com/laiketurismo_/"
+              >
+                <Instagram fontSize="large" />
+              </Link>
+              <Link
+                target="_blank"
+                href="https://www.youtube.com/watch?v=ujf7dI-7uqs"
+              >
+                <YouTube fontSize="large" />
+              </Link>
+            </div>
           </div>
         </section>
       </footer>

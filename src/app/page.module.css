@@ -73,6 +73,7 @@
 
 .headerHomeWrapper {
   max-width: 1300px;
+  margin: 0 auto;
 }
 
 .body {
@@ -98,7 +99,7 @@
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  gap: 1rem;
+  gap: 1.5rem;
   padding: 1rem;
 }
 
@@ -108,7 +109,7 @@
   justify-content: center;
   min-height: 280px;
   width: 100%;
-  max-width: 360px;
+  max-width: 400px;
   padding: 1rem;
   margin: 0;
   background: #fcfcfc;
@@ -135,12 +136,13 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin: 0 auto;
+  margin: 0 auto -1.5rem;
   width: 100%;
   max-width: 1300px;
   padding: 1rem;
 
   @media only screen and (min-width: 768px) {
+    margin: 0 auto -1.1rem;
     flex-direction: row;
     justify-content: space-between;
     align-items: flex-end;
@@ -191,6 +193,9 @@
   gap: 0.5rem;
   width: 100%;
   max-width: 420px;
+  @media only screen and (min-width: 768px) {
+    padding: 1rem 1rem 2rem;
+  }
 }
 
 .formWrapper input {
@@ -222,7 +227,7 @@
 }
 
 .formWrapper img {
-  margin-top: 1.5rem;
+  margin: 1.5rem -1rem 0 auto;
   width: auto;
   height: 290px;
 
@@ -232,4 +237,141 @@
     position: absolute;
     right: 0;
   }
+}
+
+.footer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: #000944;
+  width: 100vw;
+  padding: 1rem 1rem 0 1rem;
+  margin: 0 auto;
+}
+
+.footer section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+.footer .sectionPhone {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+
+  @media only screen and (min-width: 768px) {
+    width: 100%;
+    max-width: 1200px;
+    flex-direction: row;
+    margin: 0 auto;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding-top: 2.5rem;
+  }
+}
+
+.footer .sectionCompanyInfoLink {
+  padding: 1.5rem 0;
+  @media only screen and (min-width: 900px) {
+    width: 100%;
+    max-width: 1100px;
+    flex-direction: row;
+    margin: 0 auto;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 2.5rem 1rem;
+    flex-wrap: wrap;
+  }
+}
+
+.footer .sectionPhone img {
+  width: 150px;
+  height: auto;
+  margin: 0;
+}
+
+.footer img {
+  width: 150px;
+  height: auto;
+  margin: 0.5rem auto 2rem;
+}
+
+.footer .contact {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+  @media only screen and (min-width: 900px) {
+    margin-top: 0;
+  }
+}
+
+.footer .linkContact {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  font-weight: 700;
+  color: #fff;
+  display: flex;
+  align-items: flex-end;
+}
+
+.footer .linkContact svg {
+  margin-right: 0.75rem;
+}
+
+.footer .workWithUs {
+  font-size: 1rem;
+  line-height: 1.5rem;
+  font-weight: 400;
+  color: #fff;
+  background: #6866b1;
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+}
+
+.footer .companyInfoLink {
+  font-size: 1rem;
+  line-height: 1.5rem;
+  font-weight: 700;
+  color: #44c5cf;
+  text-decoration: none;
+}
+
+.footer .companyInfo {
+  width: 100vw;
+  background: #000636;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2.5rem;
+  padding: 1rem;
+}
+
+.footer .companyInfo p {
+  font-size: 0.85rem;
+  line-height: 1.5rem;
+  font-weight: 400;
+  color: #fcfcfc;
+  text-align: center;
+}
+
+.footer .socialMedia {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.footer .socialMedia a {
+  color: #fff;
 }
