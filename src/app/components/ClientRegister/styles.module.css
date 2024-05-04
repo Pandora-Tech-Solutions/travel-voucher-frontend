@@ -9,11 +9,11 @@
   display: flex;
   justify-content: center;
   width: 100%;
-  max-width: 700px
+  max-width: 700px;
 }
 
 .container .background {
   flex: 1;
-  background: url('/passport.jpg') no-repeat center;
+  background: url('/beach.jpg') no-repeat center;
   background-size: cover;
 }

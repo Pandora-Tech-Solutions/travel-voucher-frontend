@@ -2,20 +2,15 @@
 import { useCallback, useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import { z } from "zod";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
   Box,
   Button,
-  Grid,
   Paper,
   TextField,
   Typography,
-  Checkbox,
-  FormGroup,
-  FormControlLabel,
   FormControl,
   InputLabel,
   OutlinedInput,
@@ -26,32 +21,39 @@ import {
   Alert,
 } from "@mui/material";
 
-import {
-  LoginPayload,
-  logIn,
-  useLoginUserMutation,
-} from "@/store/features/auth-slice";
-
 import styles from "./styles.module.css";
 import Image from "next/image";
+import { Roles } from "@/types/Roles";
+import { User } from "@/types/User";
 
 export default function LoginComponent() {
   const [openAlert, setOpenAlert] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [showConfirmPassword, setShowConfirmPassword] =
+    useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const dispatch = useDispatch();
   const router = useRouter();
 
-  const [loginUser, status] = useLoginUserMutation();
-
-  const LoginSchema = z.object({
-    email: z
-      .string()
-      .min(1, { message: "Informe seu email" })
-      .email({ message: "Informe um email válido" }),
-    password: z.string().min(1, { message: "Informe sua senha" }),
-  });
+  const LoginSchema = z
+    .object({
+      name: z.string().min(1, { message: "Informe seu nome" }),
+      email: z
+        .string()
+        .min(1, { message: "Informe seu email" })
+        .email({ message: "Informe um email válido" }),
+      phone: z.string().min(1, { message: "Informe seu telefone" }),
+      password: z
+        .string()
+        .min(6, { message: "Senha deve ter no mínimo 6 caracteres" }),
+      confirmPassword: z.string().min(6, {
+        message: "Senha deve ter no mínimo 6 caracteres",
+      }),
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+      message: "As senhas não coincidem",
+      path: ["confirmPassword"],
+    });
 
   const {
     register,
@@ -61,20 +63,33 @@ export default function LoginComponent() {
     resolver: zodResolver(LoginSchema),
   });
 
-  const userLogin = useCallback(
+  const clientRegister = useCallback(
     async (values: any) => {
-      const { email, password }: LoginPayload = values;
-      const { data } = (await loginUser({ email, password })) as any;
+      setLoading(true)
+      const userData: User = values;
 
-      if (data?.access_token) {
-        dispatch(logIn({ access_token: data?.access_token, user: data?.user }));
-        router.push("/cms");
-      }
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/users`, {
+        body: JSON.stringify({ ...userData, roles: [Roles.USER] }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+      }).then((response) => {
+        console.log(response.status)
+        if (response.status !== 201) {
+          setLoading(false);
+          return setOpenAlert(true);
+        }
+
+        return router.push("/login");
+      });
     },
-    [dispatch, loginUser, router]
+    [router]
   );
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
+  const handleClickShowConfirmPassword = () =>
+    setShowConfirmPassword((show) => !show);
 
   const handleMouseDownPassword = (
     event: React.MouseEvent<HTMLButtonElement>
@@ -82,24 +97,24 @@ export default function LoginComponent() {
     event.preventDefault();
   };
 
-  useEffect(() => {
-    if (status && status?.isError) {
-      setLoading(false);
-      setOpenAlert(true);
-    }
-  }, [status]);
+  const handleMouseDownConfirmPassword = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
+  };
 
   return (
     <section className={styles.container}>
       <div className={styles.content}>
         <Paper
           sx={{
-            width: "100vw",
-            height: "100vh",
+            width: "100%",
+            height: "100%",
             display: "flex",
             flexDirection: "column",
-            justifyContent: "center",
+            justifyContent: "flex-start",
             padding: "1rem",
+            overflow: "auto",
           }}
         >
           <Image
@@ -107,6 +122,7 @@ export default function LoginComponent() {
             alt="Laiketurismo"
             width={150}
             height={100}
+            style={{ marginBottom: "1rem" }}
           />
           <Box
             component="form"
@@ -118,7 +134,7 @@ export default function LoginComponent() {
             }}
             noValidate
             autoComplete="off"
-            onSubmit={handleSubmit(userLogin)}
+            onSubmit={handleSubmit(clientRegister)}
           >
             <Typography
               variant="h4"
@@ -136,12 +152,30 @@ export default function LoginComponent() {
             </Typography>
             <TextField
               sx={{ marginBottom: "1rem" }}
+              id="name"
+              label="Nome completo"
+              variant="outlined"
+              {...register("name")}
+              error={!!errors?.name}
+              helperText={(errors?.name?.message || "").toString()}
+            />
+            <TextField
+              sx={{ marginBottom: "1rem" }}
               id="email"
-              label="Email"
+              label="E-mail"
               variant="outlined"
               {...register("email")}
               error={!!errors?.email}
               helperText={(errors?.email?.message || "").toString()}
+            />
+            <TextField
+              sx={{ marginBottom: "1rem" }}
+              id="phone"
+              label="Telefone"
+              variant="outlined"
+              {...register("phone")}
+              error={!!errors?.phone}
+              helperText={(errors?.phone?.message || "").toString()}
             />
             <FormControl sx={{ marginY: "1rem" }} variant="outlined">
               <InputLabel htmlFor="outlined-adornment-password">
@@ -172,53 +206,52 @@ export default function LoginComponent() {
                 </FormHelperText>
               )}
             </FormControl>
-            <Grid container>
-              <Grid item xs sx={{ display: "flex", alignItems: "center" }}>
-                <FormGroup>
-                  <FormControlLabel
-                    control={<Checkbox defaultChecked />}
-                    label={
-                      <Typography
-                        variant="caption"
-                        sx={{ marginTop: "1rem", textAlign: "center" }}
-                      >
-                        Lembre de mim
-                      </Typography>
-                    }
-                    sx={{ fontSize: "0.5rem" }}
-                  />
-                </FormGroup>
-              </Grid>
-              <Grid item sx={{ display: "flex", alignItems: "center" }}>
-                <Button
-                  variant="text"
-                  size="small"
-                  sx={{ fontSize: "0.8rem" }}
-                  onClick={() => (window.location.href = "/forgot-pass")}
-                >
-                  Esqueceu sua senha?
-                </Button>
-              </Grid>
-            </Grid>
+            <FormControl sx={{ marginY: "1rem" }} variant="outlined">
+              <InputLabel htmlFor="outlined-adornment-password">
+                Confirme sua senha
+              </InputLabel>
+              <OutlinedInput
+                id="outlined-adornment-password"
+                type={showConfirmPassword ? "text" : "password"}
+                {...register("confirmPassword")}
+                error={!!errors?.confirmPassword}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowConfirmPassword}
+                      onMouseDown={handleMouseDownConfirmPassword}
+                      edge="end"
+                    >
+                      {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                }
+                label="Password"
+              />
+              {errors?.confirmPassword?.message && (
+                <FormHelperText sx={{ color: "#D32F2F" }}>
+                  {errors?.confirmPassword?.message.toString()}
+                </FormHelperText>
+              )}
+            </FormControl>
             <Button
               sx={{ marginTop: "1.5rem" }}
               variant="contained"
               type="submit"
               disabled={loading}
             >
-              {loading ? "Aguarde..." : "Entrar"}
+              {loading ? "Aguarde..." : "Salvar"}
             </Button>
-            {/* <Box sx={{ display: "flex", flexDirection: "column" }}>
-          <Typography
-            variant="body2"
-            sx={{ marginTop: "1rem", textAlign: "center" }}
-          >
-            Novo por aqui?
-          </Typography>
-          <Button variant="text" sx={{ mx: "auto" }}>
-            Criar conta
-          </Button>
-        </Box> */}
+            <Box sx={{ display: "flex", flexDirection: "column" }}>
+              <Typography
+                variant="caption"
+                sx={{ marginTop: "1rem", color: "#666" }}
+              >
+                Ao clicar em Salvar, você concorda com nossos Termos de Uso e a
+                Política de Privacidade.
+              </Typography>
+            </Box>
           </Box>
           <Snackbar
             open={openAlert}
@@ -231,7 +264,7 @@ export default function LoginComponent() {
               severity="error"
               sx={{ width: "100%" }}
             >
-              Por favor, verifique suas credenciais ou entre em contato com o
+              Não foi possível realizar o cadastro, entre em contato com o
               Suporte.
             </Alert>
           </Snackbar>
