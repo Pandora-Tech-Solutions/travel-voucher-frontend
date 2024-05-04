@@ -12,6 +12,8 @@ import {
   Snackbar,
   Alert,
 } from "@mui/material";
+import styles from "./styles.module.css";
+import Image from "next/image";
 
 export default function ForgotPassComponent() {
   const [openAlert, setOpenAlert] = useState<boolean>(false);
@@ -53,84 +55,102 @@ export default function ForgotPassComponent() {
   }, []);
 
   return (
-    <Paper
-      sx={{
-        width: "100vw",
-        height: "100vh",
-        display: "flex",
-        justifyContent: "center",
-      }}
-    >
-      <Box
-        component="form"
-        sx={{
-          width: "400px",
-          margin: "auto",
-          display: "flex",
-          flexDirection: "column",
-          padding: "2rem",
-        }}
-        noValidate
-        autoComplete="off"
-        onSubmit={handleSubmit(handleForgotPass)}
-      >
-        <Typography variant="h4" component="h1" sx={{ textAlign: "center" }}>
-          Recuperar senha
-        </Typography>
-        <Typography
-          variant="body1"
-          sx={{ marginBottom: "2rem", textAlign: "center" }}
+    <section className={styles.container}>
+      <div className={styles.content}>
+        <Paper
+          sx={{
+            width: "100vw",
+            height: "100vh",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            padding: "1rem",
+          }}
         >
-          Para recuperar seu acesso, preencha o campo com seu email.
-        </Typography>
-        {!success ? (
-          <>
-            <TextField
-              sx={{ marginBottom: "1rem" }}
-              id="email"
-              label="Email"
-              variant="outlined"
-              {...register("email")}
-              error={!!errors?.email}
-              helperText={(errors?.email?.message || "").toString()}
-            />
-            <Button
-              sx={{ marginTop: "1.5rem" }}
-              variant="contained"
-              type="submit"
+          <Image
+            src="https://static.tursites.com.br/data/design/user/vendas.laiketurismo.com.br/image/logo.png"
+            alt="Laiketurismo"
+            width={150}
+            height={100}
+          />
+          <Box
+            component="form"
+            sx={{
+              width: "400px",
+              margin: "auto",
+              display: "flex",
+              flexDirection: "column",
+              padding: "2rem",
+            }}
+            noValidate
+            autoComplete="off"
+            onSubmit={handleSubmit(handleForgotPass)}
+          >
+            <Typography
+              variant="h4"
+              component="h1"
+              sx={{ textAlign: "center" }}
             >
-              Recuperar acesso
-            </Button>
-          </>
-        ) : (
-          <>
+              Recuperar senha
+            </Typography>
             <Typography
               variant="body1"
               sx={{ marginBottom: "2rem", textAlign: "center" }}
             >
-              Um email foi enviado com as instruções para recuperar sua senha.
+              Para recuperar seu acesso, preencha o campo com seu email.
             </Typography>
-            <Button onClick={() => (window.location.href = "/login")}>
-              Voltar para o login
-            </Button>
-          </>
-        )}
-      </Box>
-      <Snackbar
-        open={openAlert}
-        autoHideDuration={6000}
-        onClose={() => setOpenAlert(false)}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-      >
-        <Alert
-          onClose={() => setOpenAlert(false)}
-          severity="error"
-          sx={{ width: "100%" }}
-        >
-          Por favor, verifique suas credenciais ou entre em contato com o
-          Suporte.
-        </Alert>
-      </Snackbar>
-    </Paper>
+            {!success ? (
+              <>
+                <TextField
+                  sx={{ marginBottom: "1rem" }}
+                  id="email"
+                  label="Email"
+                  variant="outlined"
+                  {...register("email")}
+                  error={!!errors?.email}
+                  helperText={(errors?.email?.message || "").toString()}
+                />
+                <Button
+                  sx={{ marginTop: "1.5rem" }}
+                  variant="contained"
+                  type="submit"
+                >
+                  Recuperar acesso
+                </Button>
+              </>
+            ) : (
+              <>
+                <Typography
+                  variant="body1"
+                  sx={{ marginBottom: "2rem", textAlign: "center" }}
+                >
+                  Um email foi enviado com as instruções para recuperar sua
+                  senha.
+                </Typography>
+                <Button onClick={() => (window.location.href = "/login")}>
+                  Voltar para o login
+                </Button>
+              </>
+            )}
+          </Box>
+          <Snackbar
+            open={openAlert}
+            autoHideDuration={6000}
+            onClose={() => setOpenAlert(false)}
+            anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+          >
+            <Alert
+              onClose={() => setOpenAlert(false)}
+              severity="error"
+              sx={{ width: "100%" }}
+            >
+              Por favor, verifique suas credenciais ou entre em contato com o
+              Suporte.
+            </Alert>
+          </Snackbar>
+        </Paper>
+      </div>
+      <div className={styles.background} />
+    </section>
   );
 }

@@ -26,6 +26,10 @@ export default function Home() {
   return (
     <main className={styles.main}>
       <header className={styles.heroBannerWrapper}>
+        <div>
+          <Link href="#">Cadastre-se</Link>
+          <Link href="#">Login</Link>
+        </div>
         <div className={styles.headerHomeWrapper}>
           <Image
             src={LaikeLogo}
@@ -115,6 +119,7 @@ export default function Home() {
               </p>
             </div>
           </div>
+          <Link href="#">Cadastre-se e adquira o seu</Link>
         </div>
       </section>
       <section className={styles.formWrapper}>

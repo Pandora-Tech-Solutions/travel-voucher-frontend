@@ -114,23 +114,25 @@ export default function LoginComponent() {
               margin: "auto",
               display: "flex",
               flexDirection: "column",
+              maxWidth: "400px",
             }}
             noValidate
             autoComplete="off"
             onSubmit={handleSubmit(userLogin)}
           >
             <Typography
-              variant="h3"
+              variant="h4"
               component="h1"
               sx={{ textAlign: "center" }}
             >
-              Vale Viagens
+              Cadastre-se
             </Typography>
             <Typography
-              variant="body1"
+              variant="body2"
               sx={{ marginBottom: "2rem", textAlign: "center" }}
             >
-              Faça login e comece a aventura
+              Viaje o mundo com Laike Turismo! Vale-viagens: benefícios
+              exclusivos e destinos incríveis. Cadastre-se agora!
             </Typography>
             <TextField
               sx={{ marginBottom: "1rem" }}
