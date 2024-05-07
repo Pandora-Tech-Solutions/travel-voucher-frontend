@@ -178,7 +178,7 @@ export default function LoginComponent() {
                     label={
                       <Typography
                         variant="caption"
-                        sx={{ marginTop: "1rem", textAlign: "center" }}
+                        sx={{ textAlign: "center" }}
                       >
                         Lembre de mim
                       </Typography>
@@ -206,17 +206,17 @@ export default function LoginComponent() {
             >
               {loading ? "Aguarde..." : "Entrar"}
             </Button>
-            {/* <Box sx={{ display: "flex", flexDirection: "column" }}>
-          <Typography
-            variant="body2"
-            sx={{ marginTop: "1rem", textAlign: "center" }}
-          >
-            Novo por aqui?
-          </Typography>
-          <Button variant="text" sx={{ mx: "auto" }}>
-            Criar conta
-          </Button>
-        </Box> */}
+            <Box sx={{ display: "flex", flexDirection: "column" }}>
+              <Typography
+                variant="body2"
+                sx={{ marginTop: "1rem", textAlign: "center" }}
+              >
+                Novo por aqui?
+              </Typography>
+              <Button variant="text" sx={{ mx: "auto" }} onClick={() => router.push('/register')}>
+                Criar conta
+              </Button>
+            </Box>
           </Box>
           <Snackbar
             open={openAlert}

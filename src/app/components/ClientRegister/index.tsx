@@ -252,6 +252,17 @@ export default function LoginComponent() {
                 Política de Privacidade.
               </Typography>
             </Box>
+            <Box sx={{ display: "flex", flexDirection: "column" }}>
+              <Typography
+                variant="body2"
+                sx={{ marginTop: "1rem", textAlign: "center" }}
+              >
+                Já possui cadastro?
+              </Typography>
+              <Button variant="text" sx={{ mx: "auto" }} onClick={() => router.push('/login')}>
+                Faça login
+              </Button>
+            </Box>
           </Box>
           <Snackbar
             open={openAlert}

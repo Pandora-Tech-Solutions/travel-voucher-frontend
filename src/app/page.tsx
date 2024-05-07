@@ -1,3 +1,4 @@
+"use client";
 import Image from "next/image";
 
 import {
@@ -21,14 +22,65 @@ import Travelers from "../../images/travelers.png";
 
 import styles from "./page.module.css";
 import Link from "next/link";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { Button, TextField } from "@mui/material";
+import { useState } from "react";
 
 export default function Home() {
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const MailSchema = z.object({
+    name: z.string().min(1, { message: "Informe seu nome" }),
+    email: z
+      .string()
+      .min(1, { message: "Informe seu email" })
+      .email({ message: "Informe um email válido" }),
+    message: z.string().min(1, { message: "Informe sua mensagem" }),
+    phone: z.string().min(1, { message: "Informe seu telefone" }),
+  });
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(MailSchema),
+  });
+
+  const sendEmail = async (data: any) => {
+    try {
+      setLoading(true);
+      console.log(data)
+
+      data = {
+        ...data,
+        message: "Olá, gostaria de mais informações sobre o Vale Viagem.",
+      };
+
+      console.log(data)
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/mails`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      console.error(error);
+    }
+  };
+
   return (
     <main className={styles.main}>
       <header className={styles.heroBannerWrapper}>
-        <div>
-          <Link href="#">Cadastre-se</Link>
-          <Link href="#">Login</Link>
+        <div className={styles.linkWrapper}>
+          <Link href="/register">Cadastre-se</Link>
+          <Link href="/login" className={styles.loginButton}>Login</Link>
         </div>
         <div className={styles.headerHomeWrapper}>
           <Image
@@ -119,19 +171,45 @@ export default function Home() {
               </p>
             </div>
           </div>
-          <Link href="#">Cadastre-se e adquira o seu</Link>
+          <div style={{ display: 'flex', width: '100%', margin: '3rem 0' }}>
+          <Link href="/register" className={styles.registerButton}>Cadastre-se e adquira o seu</Link>
+          </div>
         </div>
       </section>
       <section className={styles.formWrapper}>
         <div className={styles.bg} />
-        <form action="">
+        <form autoComplete="off" onSubmit={handleSubmit(sendEmail)}>
           <h3>
             Entre em contato e fale com um de nossos <b>especialistas</b>
           </h3>
-          <input type="text" placeholder="Nome" />
-          <input type="text" placeholder="E-mail" />
-          <input type="text" placeholder="WhatsApp" />
-          <button type="submit">Enviar Solicitação</button>
+          <TextField
+            sx={{ width: '100%' }}
+            id="name"
+            label="Nome completo"
+            variant="outlined"
+            {...register("name")}
+            error={!!errors?.name}
+            helperText={(errors?.name?.message || "").toString()}
+          />
+          <TextField
+            sx={{ width: '100%' }}
+            id="email"
+            label="Email"
+            variant="outlined"
+            {...register("email")}
+            error={!!errors?.email}
+            helperText={(errors?.email?.message || "").toString()}
+          />
+          <TextField
+            sx={{ width: '100%' }}
+            id="phone"
+            label="WhatsApp"
+            variant="outlined"
+            {...register("phone")}
+            error={!!errors?.phone}
+            helperText={(errors?.phone?.message || "").toString()}
+          />
+          <Button type="submit" disabled={loading}>Enviar Solicitação</Button>
         </form>
         <Image src={Travelers} alt="Entre em contato, e viva aventuras!S" />
       </section>
