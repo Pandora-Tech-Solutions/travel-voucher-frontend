@@ -3,6 +3,7 @@ import NextTopLoader from "nextjs-toploader";
 import { Rubik } from "next/font/google";
 import "./globals.css";
 import ReduxProvider from "@/store/provider";
+import { GoogleAnalytics } from '@next/third-parties/google'
 
 const rubik = Rubik({ subsets: ["latin"] });
 
@@ -31,6 +32,7 @@ export default function RootLayout({
       <body className={rubik.className}>
         <NextTopLoader />
         <ReduxProvider>{children}</ReduxProvider>
+        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS || ''} />
       </body>
     </html>
   );
